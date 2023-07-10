@@ -1,0 +1,664 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: "Godspeed: Sample Microservice"
+  description: Sample API calls demonstrating the functionality of Godspeed framework
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Mindgrep Technologies Pvt Ltd
+    email: talktous@mindgrep.com
+    url: https://docs.mindgrep.com/docs/microservices/intro
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3000
+paths:
+  /another_workflow:
+    post:
+      summary: Call another (sub) workflow from main workflow
+      description: Here we are calling other yaml workflows from within the main
+        workflow. We are also using JSON schema for request body and params
+        validation
+      requestBody:
+        description: The body of the query
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_name:
+                  type: string
+              required:
+                - customer_name
+            examples:
+              sample_call:
+                summary: Customer name
+                description: Name of the customer
+                value:
+                  customer_name: Ayush
+      parameters:
+        - name: bank_id
+          in: query
+          required: true
+          description: ID of the bank
+          schema:
+            type: string
+          examples:
+            sample_bank_id:
+              value: okhdfc
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer_name:
+                    type: string
+                additionalProperties: true
+                required:
+                  - customer_name
+              examples:
+                example1:
+                  summary: Sample response
+                  value:
+                    application_id: PRM20478956N
+                    customer_name: Ayush
+  "/create/{entity_type}":
+    post:
+      summary: Create a user and show all users across Mongo or Postgres.
+      description: Create a user with posts and profile, as per the data model.
+        Returns all users created so far. Demonstrate same API for both Mongo
+        and Postgres.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                  required:
+                    - data
+                db:
+                  type: string
+              required:
+                - data
+                - db
+            examples:
+              Create a user:
+                value:
+                  db: mongo
+                  data:
+                    data:
+                      name: Rajesh
+                      email: rfd@gmail.com
+                      posts:
+                        create:
+                          title: Second post!
+                          slug: dfourth_post
+                          description: some description
+                          body: Hello World!
+                      profile:
+                        create:
+                          bio: google.com
+      parameters:
+        - name: entity_type
+          in: path
+          required: true
+          description: The type of entity to create and find later
+          schema:
+            type: string
+          examples:
+            sample_entity_type:
+              value: user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /document:
+    post:
+      summary: upload document
+      description: upload document on httpbin
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+  /helloworld:
+    get:
+      summary: hello world
+      description: print hello world
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Returns the greeting.
+          schema:
+            type: string
+        "400":
+          description: Invalid status value
+  /anything_coffee:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Gender:
+                  type: string
+              required:
+                - Gender
+            examples:
+              "{example_name}": {}
+      parameters:
+        - name: bank_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  application_id:
+                    type: string
+              examples:
+                example1:
+                  value:
+                    application_id: PRM20478956N
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lender_response_code:
+                    type: string
+              examples:
+                example1:
+                  value:
+                    lender_response_code: E001
+  /anything:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Gender:
+                  type: string
+              required:
+                - Gender
+            examples:
+              "{example_name}": {}
+      parameters:
+        - name: bank_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  application_id:
+                    type: string
+              examples:
+                example1:
+                  value:
+                    application_id: PRM20478956N
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lender_response_code:
+                    type: string
+              examples:
+                example1:
+                  value:
+                    lender_response_code: E001
+  "/postgres/category/{id}":
+    get:
+      summary: Fetch Category
+      description: Fetch Category from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    put:
+      summary: Update a Category
+      description: Update Category from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/Category"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete a Category
+      description: Delete Category from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/category:
+    post:
+      summary: Create a new Category
+      description: Create Category from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/Category"
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/category/search:
+    post:
+      summary: Fetch multiple Category
+      description: Fetch multiple Category from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        content:
+          application/json:
+            schema:
+              type: array
+  "/postgres/post/{id}":
+    get:
+      summary: Fetch Post
+      description: Fetch Post from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    put:
+      summary: Update a Post
+      description: Update Post from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/Post"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete a Post
+      description: Delete Post from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/post:
+    post:
+      summary: Create a new Post
+      description: Create Post from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/Post"
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/post/search:
+    post:
+      summary: Fetch multiple Post
+      description: Fetch multiple Post from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        content:
+          application/json:
+            schema:
+              type: array
+  "/postgres/profile/{id}":
+    get:
+      summary: Fetch Profile
+      description: Fetch Profile from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    put:
+      summary: Update a Profile
+      description: Update Profile from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/Profile"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete a Profile
+      description: Delete Profile from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/profile:
+    post:
+      summary: Create a new Profile
+      description: Create Profile from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/Profile"
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/profile/search:
+    post:
+      summary: Fetch multiple Profile
+      description: Fetch multiple Profile from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        content:
+          application/json:
+            schema:
+              type: array
+  "/postgres/user/{id}":
+    get:
+      summary: Fetch User
+      description: Fetch User from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    put:
+      summary: Update a User
+      description: Update User from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/User"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+    delete:
+      summary: Delete a User
+      description: Delete User from database
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/user:
+    post:
+      summary: Create a new User
+      description: Create User from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/definitions/postgres/User"
+      responses:
+        content:
+          application/json:
+            schema:
+              type: object
+  /postgres/user/search:
+    post:
+      summary: Fetch multiple User
+      description: Fetch multiple User from database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        content:
+          application/json:
+            schema:
+              type: array
+  /run_parallel_tasks:
+    post:
+      summary: Running tasks in parallel
+      description: >
+        Run any three tasks in parallel. Each task can invoke a function or
+        another workflow. 
+
+        Here we are simply returning a string in each task. 
+
+        In response, we are returning a JSON with output from 1st task
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: parallel task1
+  /sum:
+    get:
+      summary: A workflow involving developer written JS function
+      description: This workflow invokes a developer defined function at path com.biz.sum
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Returns the sum of two numbers.
+          schema:
+            type: integer
+        "400":
+          description: Invalid status value
+  "/switch_test/{bank_id}":
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Gender:
+                  type: string
+                condition:
+                  type: string
+              required:
+                - condition
+            example:
+              Gender: Male
+              condition: 1st
+      parameters:
+        - name: bank_id
+          in: path
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: case - default
+definitions:
+  postgres:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+          nullable: true
+        role:
+          type: string
+          default: USER
+          enum:
+            - USER
+            - ADMIN
+    Profile:
+      type: object
+      properties:
+        bio:
+          type: string
+        userId:
+          type: integer
+    Post:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        title:
+          type: string
+        published:
+          type: boolean
+          default: false
+        authorId:
+          type: integer
+        slug:
+          type: string
+        body:
+          type: string
+        description:
+          type: string
+          nullable: true
+    Category:
+      type: object
+      properties:
+        name:
+          type: string
