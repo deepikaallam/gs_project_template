@@ -17,8 +17,6 @@
     "shutdownAction": "stopCompose",
     "extensions": [
 		"dbaeumer.vscode-eslint",
-		"emeraldwalk.RunOnSave",
-		"donjayamanne.git-extension-pack",
-		"KnisterPeter.vscode-github"
-	]
+		"emeraldwalk.RunOnSave"
+    ]
 }
